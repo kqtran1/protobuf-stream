@@ -4,7 +4,6 @@ import com.google.protobuf.GeneratedMessage;
 import com.rastakiki.protobufstream.protobuf.MessageParser;
 import org.apache.commons.io.IOUtils;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -14,7 +13,7 @@ public class ProtobufStreamReader<T extends GeneratedMessage> {
     private final InputStream inputStream;
     private final MessageParser<T> messageParser;
 
-    public ProtobufStreamReader(ByteArrayInputStream inputStream, MessageParser messageParser) {
+    public ProtobufStreamReader(InputStream inputStream, MessageParser messageParser) {
         this.inputStream = inputStream;
         this.messageParser = messageParser;
     }

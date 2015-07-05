@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProtobufStreamWithFileTest {
+public class ProtobufStreamReaderWithFileTest {
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();

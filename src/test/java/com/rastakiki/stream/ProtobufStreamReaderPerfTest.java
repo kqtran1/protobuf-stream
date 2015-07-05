@@ -10,11 +10,14 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.*;
+import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Ignore("ad-hoc performance test => Use JMH ?")
 public class ProtobufStreamReaderPerfTest {
+
+    private static final Logger LOGGER = Logger.getLogger(ProtobufStreamReaderPerfTest.class.getName());
 
     public static final int MESSAGE_NUMBER = 100_000_000;
 
@@ -32,7 +35,7 @@ public class ProtobufStreamReaderPerfTest {
         for (Tuple tuple : reader) {
             messageCount++;
         }
-        System.out.println("Time to read: " + (System.currentTimeMillis() - startTime) / 1000);
+        LOGGER.info("Time to read: " + (System.currentTimeMillis() - startTime) / 1000);
         assertThat(messageCount).isEqualTo(MESSAGE_NUMBER);
     }
 
@@ -47,7 +50,7 @@ public class ProtobufStreamReaderPerfTest {
             writer.writeMessage(createTuple(i, "Unique Message " + i));
         }
         outputStream.close();
-        System.out.println(serializedMessage.length() / 1024 / 1024 / 1024);
+        LOGGER.info("File size: " + serializedMessage.length() / 1073741824 + "GB");
         return serializedMessage;
     }
 

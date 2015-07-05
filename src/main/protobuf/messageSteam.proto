@@ -1,0 +1,10 @@
+package com.rastakiki.protobufstream.protobuf;
+
+message TupleLength {
+    required int64 length = 1;
+}
+
+message Tuple {
+    required int64 id = 1;
+    required string value = 2;
+}

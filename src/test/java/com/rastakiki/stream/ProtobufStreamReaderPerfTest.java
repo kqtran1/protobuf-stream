@@ -4,18 +4,19 @@ import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.rastakiki.protobufstream.protobuf.MessageParser;
 import com.rastakiki.protobufstream.protobuf.MessageSteam.Tuple;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
-import static org.apache.commons.io.IOUtils.toBufferedInputStream;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProtobufStreamReaderWithFileTest {
+@Ignore("ad-hoc performance test => Use JMH ?")
+public class ProtobufStreamReaderPerfTest {
+
+    public static final int MESSAGE_NUMBER = 100_000_000;
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -24,26 +25,29 @@ public class ProtobufStreamReaderWithFileTest {
     public void should_read_messages_until_end_of_stream() throws IOException {
         File serializedMessage = createFileWith4Tuple();
 
-        final ProtobufStreamReader<Tuple> reader = createStreamReader(toBufferedInputStream(new FileInputStream(serializedMessage)));
+        final ProtobufStreamReader<Tuple> reader = createStreamReader(new FileInputStream(serializedMessage));
 
-        final List<Tuple> tuples = new ArrayList<>();
+        long messageCount = 0L;
+        final long startTime = System.currentTimeMillis();
         for (Tuple tuple : reader) {
-            tuples.add(tuple);
+            messageCount++;
         }
-        assertThat(tuples).hasSize(4);
+        System.out.println("Time to read: " + (System.currentTimeMillis() - startTime) / 1000);
+        assertThat(messageCount).isEqualTo(MESSAGE_NUMBER);
     }
 
     private File createFileWith4Tuple() throws IOException {
         File serializedMessage = temporaryFolder.newFile();
         serializedMessage.createNewFile();
 
-        final BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(serializedMessage));
+        final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(serializedMessage));
         final ProtobufStreamWriter<Tuple> writer = new ProtobufStreamWriter<>(outputStream);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < MESSAGE_NUMBER; i++) {
             writer.writeMessage(createTuple(i, "Unique Message " + i));
         }
         outputStream.close();
+        System.out.println(serializedMessage.length() / 1024 / 1024 / 1024);
         return serializedMessage;
     }
 

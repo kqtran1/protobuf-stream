@@ -19,7 +19,7 @@ public class ProtobufStreamReaderTest {
         writer.writeMessage(createTuple(10L, "Unique Message 1"));
 
         final ProtobufStreamReader<Tuple> reader = createStreamReader(outputStream);
-        final Tuple tuple1 = reader.readMessage();
+        final Tuple tuple1 = reader.nextMessage();
 
 
         assertThat(tuple1.getId()).isEqualTo(10L);
@@ -34,8 +34,8 @@ public class ProtobufStreamReaderTest {
         writer.writeMessage(createTuple(20L, "Unique Message 2"));
 
         final ProtobufStreamReader<Tuple> reader = createStreamReader(outputStream);
-        final Tuple tuple1 = reader.readMessage();
-        final Tuple tuple2 = reader.readMessage();
+        final Tuple tuple1 = reader.nextMessage();
+        final Tuple tuple2 = reader.nextMessage();
 
 
         assertThat(tuple1.getId()).isEqualTo(10L);

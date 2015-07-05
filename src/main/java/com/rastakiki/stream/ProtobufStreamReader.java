@@ -12,6 +12,7 @@ public class ProtobufStreamReader<T extends GeneratedMessage> {
 
     private final InputStream inputStream;
     private final MessageParser<T> messageParser;
+    private byte[] messageLengthByte;
 
     public ProtobufStreamReader(InputStream inputStream, MessageParser messageParser) {
         this.inputStream = inputStream;
@@ -20,15 +21,13 @@ public class ProtobufStreamReader<T extends GeneratedMessage> {
 
     public T readMessage() {
         try {
-            return readMessage(inputStream);
+            return readNextMessage();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private T readMessage(InputStream inputStream) throws IOException {
-        final byte[] messageLengthByte = new byte[Integer.BYTES];
-        IOUtils.read(inputStream, messageLengthByte);
+    private T readNextMessage() throws IOException {
         final int messageLength = bytesToInt(messageLengthByte);
         inputStream.mark(Long.BYTES);
 
@@ -44,5 +43,23 @@ public class ProtobufStreamReader<T extends GeneratedMessage> {
         return buffer.getInt();
     }
 
+    public boolean hasNext() {
+        try {
+            messageLengthByte = new byte[Integer.BYTES];
+            final int byteRead = IOUtils.read(inputStream, messageLengthByte);
+            if (byteRead < Integer.BYTES) {
+                return false;
+            }
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    public T nextMessage() {
+        if (!hasNext()) {
+            return null;
+        }
+        return readMessage();
+    }
 }

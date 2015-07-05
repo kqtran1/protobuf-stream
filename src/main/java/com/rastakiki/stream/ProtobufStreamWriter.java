@@ -26,10 +26,10 @@ public class ProtobufStreamWriter<T extends GeneratedMessage> {
     private byte[] createMessageBytes(T message) throws InvalidProtocolBufferException {
         final byte[] tupleBytes = message.toByteArray();
 
-        final long messageLength = tupleBytes.length;
-        byte[] lengthBytes = ByteBuffer.allocate(Long.BYTES).putLong(messageLength).array();
+        final int messageLength = tupleBytes.length;
+        byte[] lengthBytes = ByteBuffer.allocate(Integer.BYTES).putInt(messageLength).array();
 
-        byte[] entireMessage = new byte[tupleBytes.length + Long.BYTES];
+        byte[] entireMessage = new byte[tupleBytes.length + Integer.BYTES];
         System.arraycopy(lengthBytes, 0, entireMessage, 0, lengthBytes.length);
         System.arraycopy(tupleBytes, 0, entireMessage, lengthBytes.length, tupleBytes.length);
         return entireMessage;

@@ -28,21 +28,21 @@ public class ProtobufStreamReader<T extends GeneratedMessage> {
     }
 
     private T readMessage(InputStream inputStream) throws IOException {
-        final byte[] messageLengthByte = new byte[Long.BYTES];
+        final byte[] messageLengthByte = new byte[Integer.BYTES];
         IOUtils.read(inputStream, messageLengthByte);
-        final long messageLength = bytesToLong(messageLengthByte);
+        final int messageLength = bytesToInt(messageLengthByte);
         inputStream.mark(Long.BYTES);
 
-        final byte[] messageContent = new byte[(int) messageLength];
+        final byte[] messageContent = new byte[messageLength];
         IOUtils.read(inputStream, messageContent);
         return messageParser.parseMessage(messageContent);
     }
 
-    public static long bytesToLong(byte[] bytes) {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+    public static int bytesToInt(byte[] bytes) {
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES);
         buffer.put(bytes, 0, bytes.length);
         buffer.flip();
-        return buffer.getLong();
+        return buffer.getInt();
     }
 
 

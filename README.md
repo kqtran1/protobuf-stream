@@ -1,6 +1,6 @@
 # Protobuf message streaming implementation
 
-Protobuf is not meant to serialize huge graph of object.
+Protobuf is not meant to serialize huge graph of objects.
 The idea is to stream multiple messages with the following protocol:
 
 

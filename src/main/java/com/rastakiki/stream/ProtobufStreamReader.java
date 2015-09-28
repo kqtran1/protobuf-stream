@@ -4,13 +4,14 @@ import com.google.protobuf.GeneratedMessage;
 import com.rastakiki.protobufstream.protobuf.MessageParser;
 import org.apache.commons.io.IOUtils;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class ProtobufStreamReader<T extends GeneratedMessage> implements Iterable<T>, Cloneable {
+public class ProtobufStreamReader<T extends GeneratedMessage> implements Iterable<T>, Closeable {
 
     private final InputStream inputStream;
     private final MessageParser<T> messageParser;
@@ -41,6 +42,7 @@ public class ProtobufStreamReader<T extends GeneratedMessage> implements Iterabl
         return message;
     }
 
+    @Override
     public void close() throws IOException {
         inputStream.close();
     }
